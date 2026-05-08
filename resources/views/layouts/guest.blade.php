@@ -16,10 +16,8 @@
     </head>
     <body class="font-sans text-gray-900 antialiased">
         
-        <!-- Tambahkan Preloader Disini -->
-        <div id="preloader">
-            <div class="loader"></div>
-        </div>
+        <!-- Memanggil Komponen Loader -->
+        <x-loader />
 
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
             <div>
@@ -34,16 +32,6 @@
             </div>
         </div>
 
-        <!-- Script untuk Menghilangkan Loader -->
-        <script>
-            window.addEventListener("load", function() {
-                const preloader = document.getElementById("preloader");
-                if (preloader) {
-                    setTimeout(() => {
-                        preloader.classList.add("loader-hidden");
-                    }, 500); 
-                }
-            });
-        </script>
+
     </body>
 </html>

@@ -36,6 +36,9 @@
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased">
     
+    <!-- Memanggil Komponen Loader -->
+    <x-loader />
+
     <div class="flex flex-col min-h-screen">
         
         <!-- HEADER -->
