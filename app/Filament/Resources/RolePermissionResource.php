@@ -11,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Filament\Notifications\Notification;
 
 class RolePermissionResource extends Resource
 {
@@ -109,9 +110,9 @@ class RolePermissionResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->after(fn (RolePermission $record) => static::clearPermissionCache($record)),
+                    ->after(fn () => static::notifyPermissionUpdated()),
                 Tables\Actions\DeleteAction::make()
-                    ->after(fn (RolePermission $record) => static::clearPermissionCache($record)),
+                    ->after(fn () => static::notifyPermissionUpdated()),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -135,8 +136,12 @@ class RolePermissionResource extends Resource
         ];
     }
 
-    protected static function clearPermissionCache(RolePermission $record): void
+    public static function notifyPermissionUpdated(): void
     {
-        cache()->forget($record->cacheKey());
+        Notification::make()
+            ->success()
+            ->title('Hak akses berhasil diperbarui.')
+            ->body('User terkait akan mengikuti akses terbaru setelah reload halaman.')
+            ->send();
     }
 }

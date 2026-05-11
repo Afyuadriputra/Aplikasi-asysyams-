@@ -13,8 +13,31 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'is_active' => \App\Http\Middleware\EnsureUserIsActive::class,
+            'permission' => \App\Http\Middleware\EnsureUserHasPermission::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e, \Illuminate\Http\Request $request) {
+            if ($e->getStatusCode() !== 403 || ! $request->is('admin*')) {
+                return null;
+            }
+
+            $user = $request->user();
+
+            if (! $user) {
+                return redirect()->route('login');
+            }
+
+            if ($user->role === 'student') {
+                return redirect()->route('dashboard');
+            }
+
+            $fallback = $user->getFirstAllowedFilamentRoute();
+
+            if ($fallback) {
+                return redirect()->to($fallback);
+            }
+
+            return redirect()->route('access.denied');
+        });
     })->create();

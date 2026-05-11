@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 
 class RolePermission extends Model
 {
@@ -46,19 +45,4 @@ class RolePermission extends Model
         ];
     }
 
-    protected static function booted(): void
-    {
-        static::saved(function (self $permission): void {
-            Cache::forget($permission->cacheKey());
-        });
-
-        static::deleted(function (self $permission): void {
-            Cache::forget($permission->cacheKey());
-        });
-    }
-
-    public function cacheKey(): string
-    {
-        return "role_permission:{$this->role}:{$this->permission}";
-    }
 }
