@@ -275,8 +275,14 @@
                         // Munculkan Popup Midtrans
                         window.snap.pay(data.snap_token, {
                             onSuccess: function(result){
-                                // Redirect ke halaman sukses
-                                window.location.href = "{{ route('payment.success') }}?order_id=" + result.order_id;
+                                const params = new URLSearchParams({
+                                    order_id: result.order_id || '',
+                                    transaction_status: result.transaction_status || 'settlement',
+                                    status_code: result.status_code || '',
+                                    payment_type: result.payment_type || '',
+                                });
+
+                                window.location.href = "{{ route('payment.success') }}?" + params.toString();
                             },
                             onPending: function(result){
                                 alert("Menunggu pembayaran!");
